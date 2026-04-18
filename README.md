@@ -1,447 +1,234 @@
-# 🚀 StratAI — Multi-Agent Battle Arena using Reinforcement Learning
+<div align="center">
+<br/>
 
-## 🧠 Introduction
+# STRAT**AI**
+### Multi-Agent Battle Arena — Reinforcement Learning
 
-**StratAI** is a **multi-agent reinforcement learning project** where two AI agents learn to fight each other in a grid-based battle environment.
+<br/>
 
-Instead of hardcoding behavior, both agents:
+![Python](https://img.shields.io/badge/Python-3.10+-blue?style=flat-square&logo=python&logoColor=white)
+![PyTorch](https://img.shields.io/badge/PyTorch-2.0+-ee4c2c?style=flat-square&logo=pytorch&logoColor=white)
+![Gymnasium](https://img.shields.io/badge/Gymnasium-0.29-black?style=flat-square&logo=openai&logoColor=white)
+![Pygame](https://img.shields.io/badge/Pygame-2.5-green?style=flat-square&logo=pygame&logoColor=white)
+![Algorithm](https://img.shields.io/badge/Algorithm-PPO_Self--Play-gold?style=flat-square)
+![Status](https://img.shields.io/badge/Status-Active-brightgreen?style=flat-square)
 
-* Learn **how to move**
-* Learn **when to attack**
-* Learn **when to dodge**
-* Develop **strategies over time**
+<br/>
 
-👉 This project simulates **real decision-making AI**, similar to what is used in:
+> Two AI agents. One battlefield. Zero hardcoded rules.
+> **Every move, every attack, every strategy — learned from scratch.**
 
-* Game AI (like NPCs)
-* Robotics
-* Autonomous systems
+<br/>
 
----
 
-# 📘 Explanation Section (For Beginners)
+<img src="StratAI_Game_Interface.png" alt="StratAI Battle Arena" width="800"/>
 
-## 🔹 What is Reinforcement Learning (RL)?
-
-Reinforcement Learning is a type of machine learning where:
-
-👉 An **agent learns by interacting with an environment**
-
-* It takes actions
-* Gets rewards or penalties
-* Improves over time
-
-### 🧠 Simple Example:
-
-Imagine teaching a dog:
-
-* Sit → reward ✅
-* Jump randomly → no reward ❌
-
-Over time, the dog learns what works.
+</div>
 
 ---
 
-## 🔹 Core RL Components
+## What is StratAI?
 
-### 1. **Agent**
+StratAI is a **multi-agent reinforcement learning** project where two AI agents fight each other on a 10×10 grid battlefield. Neither agent is given any rules or instructions — they figure out how to move, when to attack, when to dodge, and when to retreat entirely on their own through thousands of episodes of trial and error.
 
-The learner (our AI player)
+This is the same principle behind AI systems used in game development, robotics, and autonomous decision-making — just made visual and accessible.
 
-👉 Example: Player A in the game
-
----
-
-### 2. **Environment**
-
-Where the agent operates
-
-👉 Example: Grid battlefield
+<br/>
 
 ---
 
-### 3. **State**
+## For Complete Beginners — What is Reinforcement Learning?
 
-Current situation of the agent
+Think of training a dog. You don't explain what to do in words — you give it a **treat when it does something right** and nothing when it doesn't. Over many repetitions, the dog figures out what gets rewards.
 
-👉 Example:
+Reinforcement Learning works exactly the same way:
 
-* Position of agents
-* Health
-* Distance
+- The **agent** is the AI (the dog)
+- The **environment** is the world it lives in (the battlefield)
+- The **reward** is the feedback signal (treat or no treat)
+- The **policy** is the strategy it develops over time
 
----
+The agent starts knowing absolutely nothing. By episode 3,000, it has developed real combat tactics.
 
-### 4. **Action**
-
-What the agent can do
-
-👉 Example:
-
-* Move (up, down, left, right)
-* Attack
-* Wait
-* Dodge
+<br/>
 
 ---
 
-### 5. **Reward**
+## The Six Core RL Concepts — In This Project
 
-Feedback from environment
+| Concept | What It Means | In StratAI |
+|---|---|---|
+| **Agent** | The AI that makes decisions | Agent A — the learner |
+| **Environment** | The world the agent operates in | 10×10 grid battlefield |
+| **State** | Snapshot of the current situation | Position, HP, distance, cooldown, time |
+| **Action** | Choices available at each step | Move / Attack / Dodge / Wait |
+| **Reward** | Feedback — good or bad signal | +5.5 on hit, −3 wasted attack |
+| **Policy** | The strategy the agent develops | Learned by the neural network |
 
-👉 Example:
-
-* Attack success → +reward
-* Wrong action → penalty
-
----
-
-### 6. **Policy**
-
-Strategy used by agent
-
-👉 Learned automatically
+<br/>
 
 ---
 
-# ⚙️ Important Parameters (Simple Explanation)
+## Key Parameters Explained
 
-## 🔹 Episodes
+| Parameter | What It Does | Value Used |
+|---|---|---|
+| **Episodes** | Number of full games played during training. More = smarter agent | `3,000` |
+| **Gamma (γ)** | How much the agent values future rewards. At 0.99 it plans many steps ahead | `0.99` |
+| **Learning Rate** | How fast the neural network updates. Too high = unstable, too low = slow | `3e-4` |
+| **PPO Clip (ε)** | Prevents policy from changing too drastically in one update. Keeps training stable | `0.2` |
+| **Entropy Bonus** | Keeps the agent exploring instead of getting stuck repeating the same moves | `0.01` |
+| **Self-Play Sync** | Every N episodes Agent B becomes a copy of Agent A — always a worthy opponent | `Every 100 ep` |
 
-Number of games played during training
-
-👉 More episodes = better learning
-
----
-
-## 🔹 Gamma (γ)
-
-Future reward importance
-
-* High (0.99) → long-term thinking
-* Low (0.5) → short-term
-
-👉 Example:
-Choosing between:
-
-* Immediate attack
-* Better position later
+<br/>
 
 ---
 
-## 🔹 Epsilon (ε) *(DQN phase)*
+## Development — Built in Six Phases
 
-Exploration vs exploitation
+### Phase 1 — Environment Design
+Built the grid battlefield from scratch using Gymnasium. Added movement, basic attacks, and a reward system that gives the agent feedback on every single action.
 
-* High ε → random actions
-* Low ε → learned behavior
-
----
-
-## 🔹 Learning Rate
-
-How fast model learns
-
-* High → unstable
-* Low → slow
+`Grid World` `Movement` `Basic Rewards`
 
 ---
 
-## 🔹 PPO Clip (ε_clip)
+### Phase 2 — DQN Training
+First attempt used Deep Q-Networks. Quickly discovered that DQN struggles in multi-agent settings — agents got stuck, oscillated, or found degenerate strategies like never moving.
 
-Prevents drastic policy updates
-
-👉 Keeps learning stable
-
----
-
-# 🧩 Project Pipeline (Overview)
-
-## Phase 1 → Basic RL Setup
-
-* Created environment
-* Added movement + attack
-* Used simple reward system
+`Problem: Oscillation` `Problem: Instability` `Valuable Lessons Learned`
 
 ---
 
-## Phase 2 → DQN Training
+### Phase 3 — PPO Upgrade
+Switched to **Proximal Policy Optimization** — an algorithm specifically designed for training stability. Training became smoother and the agent started developing consistent behavior.
 
-* Trained agent using Q-learning
-* Faced instability & oscillation
-* Agents got stuck or behaved randomly
-
----
-
-## Phase 3 → PPO (Advanced RL)
-
-* Switched to PPO
-* Stable learning
-* Smooth behavior
+`Stable Training` `Better Convergence` `Smooth Behavior`
 
 ---
 
-## Phase 4 → Self-Play
+### Phase 4 — Self-Play
+Instead of training against a fixed scripted opponent, Agent A now trains against a **frozen copy of itself**. Every 100 episodes the copy updates. This creates an escalating challenge that forces real strategy to emerge.
 
-* AI vs AI training
-* No fixed opponent
-* Real strategy emergence
-
----
-
-## Phase 5 → Advanced Combat System
-
-Added:
-
-* Attack cooldown
-* Dodge system
-* Critical hits
-* Sequential combat
+`AI vs AI` `Periodic Opponent Sync` `Real Strategy Emergence`
 
 ---
 
-## Phase 6 → Visualization
+### Phase 5 — Advanced Combat System
+Added attack cooldowns, a dodge system, critical hits, and sequential (turn-order) combat resolution. These mechanics prevent attack spamming and make timing and positioning actually matter.
 
-* Built real-time game UI
-* Pygame-based rendering
-* Health bars + attack effects
-
----
-
-# 🔬 Step-by-Step Development
+`Attack Cooldown` `Dodge System` `Critical Hits` `Sequential Combat`
 
 ---
 
-## 🔹 Phase 1: Environment Design
+### Phase 6 — Showcase Visualization
+Built a cinematic Pygame renderer with glowing agents, particle explosions on hit, screen shake on critical strikes, movement trails, HP bars, a rolling combat log, cooldown indicators, and a winner end-screen.
 
-### 🎯 Goal:
+`Particle FX` `Screen Shake` `HP Bars` `Combat Log` `Winner Screen`
 
-Create basic world for agents
-
-### 🧩 Features:
-
-* Grid system
-* Movement
-* Basic attack
-
-### ❗ Challenges:
-
-* Agents not learning
-* No meaningful reward
-
-### ✅ Solution:
-
-* Added reward shaping
+<br/>
 
 ---
 
-## 🔹 Phase 2: DQN Training
+## Problems Hit — And How They Were Solved
 
-### 🎯 Goal:
+This is an honest account of what broke during development and exactly how each issue was fixed.
 
-Train agent using Q-learning
+| Problem | Solution |
+|---|---|
+| Agent freezes and never moves | Randomised spawn positions — agent can't memorise a single fixed path |
+| Agent oscillates between two tiles forever | Visit count penalty — revisiting the same cell costs escalating reward |
+| Agent approaches enemy but never attacks | Snapshot adjacency *before* movement so attack checks use the correct state |
+| Attack spamming with no repositioning | Attack cooldown system — 2-step lockout after each strike |
+| One agent always wins, no real competition | Self-play with periodic sync + randomised damage variance (1–4 per hit) |
+| Matches always draw at max steps | HP-differential reward at timeout — higher HP = winner declared |
+| Enemy policy falls through on cooldown | Explicit return in every branch of `_enemy_policy()` — no fall-through bug |
 
-### ❗ Problems:
-
-* Oscillating rewards
-* Agents stuck
-* Unstable behavior
-
-### 🧠 Insight:
-
-DQN fails in multi-agent systems
-
----
-
-## 🔹 Phase 3: PPO Upgrade
-
-### 🎯 Why PPO?
-
-Because:
-
-* Stable learning
-* Better for continuous decision making
-
-### ✅ Result:
-
-* Smooth behavior
-* Better convergence
+<br/>
 
 ---
 
-## 🔹 Phase 4: Self-Play
-
-### 🎯 Goal:
-
-AI learns from itself
-
-### ❗ Problem:
-
-* Collapse / imbalance
-
-### ✅ Solution:
-
-* Freeze opponent periodically
-
----
-
-## 🔹 Phase 5: Combat System Fix
-
-### Issues:
-
-* Attack spam
-* Draw matches
-
-### Solutions:
-
-* Attack cooldown
-* Sequential attacks
-* Random damage
-
----
-
-## 🔹 Phase 6: Visualization
-
-### Why important?
-
-👉 RL has no clear metrics
-
-Visualization helps:
-
-* Understand behavior
-* Debug learning
-
----
-
-# 🧠 Key Challenges & Solutions
-
-| Problem             | Solution                       |
-| ------------------- | ------------------------------ |
-| Agents stuck        | Use sampling instead of argmax |
-| Always draw         | Sequential attack logic        |
-| One agent dominates | Add randomness                 |
-| No strategy         | Reward shaping                 |
-| Hard to debug       | Visualization                  |
-
----
-
-# 📁 Project Structure
+## Project Structure
 
 ```
 StratAI/
 │
 ├── env/
-│   └── battle_env.py
+│   └── battle_env.py          # Grid world, combat logic, reward shaping
 │
 ├── model/
-│   └── PPO / DQN
+│   └── ppo.py, DQN.py         # Actor-Critic neural network (PPO)
 │
-├── ppo_selfplay.py
-├── visualize_game_pro.py
-└── utils/
+├── utils/
+│   └── replay_buffer.py       # Experience storage (DQN phase)
+│
+├── train.py , pp_train.py     # For DQN based training 
+├── ppo_selfplay.py            # Main training loop with self-play
+├── visualize_game_pro.py      # Cinematic Pygame battle renderer
+└── ppo_selfplay.pth           # Saved model weights (generated after training)
 ```
 
----
-
-# 📦 Important Libraries
-
-## 🔹 PyTorch
-
-Used for:
-
-* Neural networks
-* Training model
+<br/>
 
 ---
 
-## 🔹 Gymnasium
+## Libraries Used
 
-Used for:
+| Library | Purpose |
+|---|---|
+| **PyTorch** | Builds and trains the neural network — powers the actor-critic architecture |
+| **Gymnasium** | Provides the standard RL environment interface — observation space, action space, step |
+| **NumPy** | All numerical operations — state arrays, random damage rolls, position math |
+| **Pygame** | Real-time battle visualization with particles, glows, HP bars, and screen effects |
 
-* Environment structure
-
----
-
-## 🔹 NumPy
-
-Used for:
-
-* Calculations
-* State handling
+<br/>
 
 ---
 
-## 🔹 Pygame
+## How to Run
 
-Used for:
-
-* Visualization
-* Game rendering
-
----
-
-# 🛠️ How to Run
-
-## 1. Clone repo
-
+**1. Clone the repository**
 ```bash
-git clone <your-repo-link>
+git clone https://github.com/your-username/StratAI.git
 cd StratAI
 ```
 
----
-
-## 2. Install dependencies
-
+**2. Install dependencies**
 ```bash
 pip install torch pygame gymnasium numpy
 ```
 
----
-
-## 3. Train model
-
+**3. Train the model**
 ```bash
 python ppo_selfplay.py
 ```
+This runs 3,000 episodes and saves `ppo_selfplay.pth` every 100 episodes. Watch the reward climb in the terminal.
 
----
-
-## 4. Run visualization
-
+**4. Watch the battle**
 ```bash
 python visualize_game_pro.py
 ```
+Opens the cinematic renderer. Press `R` to restart a match, `Q` to quit.
+
+<br/>
 
 ---
 
-# 📊 Final Result
+<div align="center">
 
-* AI learns from scratch
-* Develops strategies
-* Shows real-time combat
+## Built by
 
-👉 This is **multi-agent intelligence in action**
+### Dhruv Devaliya
+*Bit Bard*
 
----
+<br/>
 
-# 🧾 Summary
+[![Email](https://img.shields.io/badge/Email-dhruvdevaliya@gmail.com-blue?style=flat-square&logo=gmail&logoColor=white)](mailto:dhruvdevaliya@gmail.com)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-dhruv--devaliya-0077b5?style=flat-square&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/dhruv-devaliya/)
+[![Phone](https://img.shields.io/badge/Phone-+91_85912_16244-green?style=flat-square&logo=whatsapp&logoColor=white)](tel:+918591216244)
 
-StratAI demonstrates:
+<br/>
 
-* Reinforcement Learning fundamentals
-* Transition from DQN → PPO
-* Multi-agent self-play
-* Real-world AI behavior
+*StratAI — Multi-Agent Battle Arena — Reinforcement Learning*
 
----
-
-# ❤️ Connect With Me
-
-📧 Email: [dhruvdevaliya@gmail.com](mailto:dhruvdevaliya@gmail.com)
-📞 Phone: +91 8591216244
-🔗 LinkedIn: https://www.linkedin.com/in/dhruv-devaliya/
-
----
-
-# 💙 Built with passion by **Bit Bard**
+</div>
