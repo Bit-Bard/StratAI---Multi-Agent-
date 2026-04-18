@@ -84,6 +84,67 @@ The agent starts knowing absolutely nothing. By episode 3,000, it has developed 
 
 ---
 
+## Understand DQN vs PPO
+Here is your content **cleaned + properly structured (no extra additions)**:
+
+---
+
+## **DQN vs PPO (Reinforcement Learning)**
+
+### **1. DQN (Deep Q-Network)**
+
+**Type:** Value-based RL
+
+**Idea:**
+Learn a function that tells **how good each action is in a state**
+
+**Details:**
+
+* Uses a neural network to approximate **Q(s, a)**
+* Chooses action with highest Q-value
+
+**Flow:**
+
+* **Input:** state
+* **Output:** Q-values for all actions
+* **Action:** `max(Q)`
+
+**Use when:**
+
+* Discrete actions (left, right, jump, etc.)
+
+---
+
+### **2. PPO (Proximal Policy Optimization)**
+
+**Type:** Policy-based RL
+
+**Idea:**
+Learn directly what action to take
+
+**Details:**
+
+* Learns a policy **π(a|s)** (probability of actions)
+* Updates policy carefully (**clipped updates**) to avoid instability
+
+**Flow:**
+
+* **Input:** state
+* **Output:** probability of each action
+* **Action:** sampled from probabilities
+
+**Use when:**
+
+* Continuous or complex action spaces
+* More stable than basic policy methods
+
+---
+
+### **Key Difference**
+
+* **DQN → learns value (Q-function) → indirect action selection**
+* **PPO → learns policy directly → direct action selection**
+
 ## Development — Built in Six Phases
 
 ### Phase 1 — Environment Design
